@@ -23,44 +23,42 @@ void setup() {
   }
 }
 
-class Led
-{
-private:
-  int _x_coord;
-  int _y_coord;
+class Led {
+  private:
+    int _x_coord;
+    int _y_coord;
 
-public:
-  Led (int x_coord, int y_coord) {
-    _x_coord = x_coord;
-    _y_coord = y_coord;
-  }
+  public:
+    Led (int x_coord, int y_coord) {
+      _x_coord = x_coord;
+      _y_coord = y_coord;
+    }
 
-  void light () {
-    set(true);
-  }
+    void light () {
+      set(true);
+    }
 
-  void unlight () {
-    set(false);
-  }
+    void unlight () {
+      set(false);
+    }
 
-  void set (int isLit) {
-    digitalWrite( row[_x_coord], (isLit) ? (HIGH) : (LOW)); // the anode is high
-    digitalWrite( col[_y_coord], (isLit) ? (LOW) : (HIGH));   // the cathode is low
+    void set (int isLit) {
+      digitalWrite( row[_x_coord], (isLit) ? (HIGH) : (LOW)); // the anode is high
+      digitalWrite( col[_y_coord], (isLit) ? (LOW) : (HIGH));   // the cathode is low
 
-    // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
-    delayMicroseconds(1);
+      // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
+      delayMicroseconds(1);
 
-    //now we have tu turn it off so we will inverse the polarity
-    digitalWrite( row[_x_coord], (isLit) ? (LOW) : (HIGH));  // the anode is low
-    digitalWrite( col[_y_coord], (isLit) ? (HIGH) : (LOW));  // the cathode is high
+      //now we have tu turn it off so we will inverse the polarity
+      digitalWrite( row[_x_coord], (isLit) ? (LOW) : (HIGH));  // the anode is low
+      digitalWrite( col[_y_coord], (isLit) ? (HIGH) : (LOW));  // the cathode is high
 
-    //we have turn the led off, next delay it 1 microsecond and  go to the next row
-    delayMicroseconds(1);
-  }
+      //we have turn the led off, next delay it 1 microsecond and  go to the next row
+      delayMicroseconds(1);
+    }
 };
 
-class Row
-{
+class Row {
   private:
     int size;
     int _x_coord;
@@ -85,8 +83,7 @@ class Row
     }
 };
 
-class Column
-{
+class Column {
   private:
     int size;
     int _y_coord;
