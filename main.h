@@ -13,8 +13,6 @@ const int row[gridSize] = { 2, 3 }; // the anodes
 const int col[gridSize] = { 4, 5 }; // the cathodes
 
 void setup() {
-  Serial.begin(9600);
-
   for (int thisPin = 0; thisPin < gridSize; thisPin++){
       //we initialize the pins as output's
       pinMode(col[thisPin], OUTPUT);
@@ -25,8 +23,44 @@ void setup() {
   }
 }
 
+class Led
+{
+private:
+  int _x_coord;
+  int _y_coord;
+
+public:
+  Led (int x_coord, int y_coord) {
+    _x_coord = x_coord;
+    _y_coord = y_coord;
+  }
+
+  void light () {
+    set(true);
+  }
+
+  void unlight () {
+    set(false);
+  }
+
+  void set (int isLit) {
+    digitalWrite( row[_x_coord], (isLit) ? (HIGH) : (LOW)); // the anode is high
+    digitalWrite( col[_y_coord], (isLit) ? (LOW) : (HIGH));   // the cathode is low
+
+    // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
+    delayMicroseconds(1);
+
+    //now we have tu turn it off so we will inverse the polarity
+    digitalWrite( row[_x_coord], (isLit) ? (LOW) : (HIGH));  // the anode is low
+    digitalWrite( col[_y_coord], (isLit) ? (HIGH) : (LOW));  // the cathode is high
+
+    //we have turn the led off, next delay it 1 microsecond and  go to the next row
+    delayMicroseconds(1);
+  }
+};
+
 void loop() {
-  lightRow(0);
+  lightPoint(1, 1);
 }
 
 void lightAllDiagonal() {
@@ -78,16 +112,7 @@ void unlightPoint(int colId, int rowId, bool isLit) {
 }
 
 void setPoint(int colId, int rowId, bool isLit) {
-  digitalWrite( row[rowId], (isLit) ? (HIGH) : (LOW)); // the anode is high
-  digitalWrite( col[colId], (isLit) ? (LOW) : (HIGH));   // the cathode is low
+  Led ledInstance(colId, rowId);
 
-  // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
-  delayMicroseconds(1);
-
-  //now we have tu turn it off so we will inverse the polarity
-  digitalWrite( row[rowId], (isLit) ? (LOW) : (HIGH));  // the anode is low
-  digitalWrite( col[colId], (isLit) ? (HIGH) : (LOW));  // the cathode is high
-
-  //we have turn the led off, next delay it 1 microsecond and  go to the next row
-  delayMicroseconds(1);
+  ledInstance.set(isLit);
 }
