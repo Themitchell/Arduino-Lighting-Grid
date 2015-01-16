@@ -59,8 +59,60 @@ public:
   }
 };
 
+class Row
+{
+  private:
+    int size;
+    int _x_coord;
+
+  public:
+    Row (int size, int x_coord) {
+      _x_coord = x_coord;
+    }
+
+    void light () {
+      set(true);
+    }
+
+    void unlight () {
+      set(false);
+    }
+
+    void set (int isLit) {
+      for ( int y_coord = 0; y_coord < gridSize; y_coord++) {
+        setPoint(y_coord, _x_coord, isLit);
+      }
+    }
+};
+
+class Column
+{
+  private:
+    int size;
+    int _y_coord;
+
+  public:
+    Column (int size, int y_coord) {
+      _y_coord = y_coord;
+    }
+
+    void light () {
+      set(true);
+    }
+
+    void unlight () {
+      set(false);
+    }
+
+    void set (int isLit) {
+      for ( int x_coord = 0; x_coord < gridSize; x_coord++) {
+        setPoint(_y_coord, x_coord, isLit);
+      }
+    }
+};
+
 void loop() {
-  lightPoint(1, 1);
+  setColumn(1, true);
 }
 
 void lightAllDiagonal() {
@@ -75,44 +127,17 @@ void unlightAllDiagonal() {
   }
 }
 
-void lightColumn(int colId) {
-  setColumn(colId, true);
-}
-
-void unlightColumn(int colId) {
-  setColumn(colId, false);
-}
-
 void setColumn(int colId, bool isLit) {
-  for ( int Pin = 0; Pin < gridSize; Pin++) {
-    setPoint(colId, Pin, isLit);
-  }
-}
-
-void lightRow(int rowId) {
-  setRow(rowId, true);
-}
-
-void unlightRow(int rowId) {
-  setRow(rowId, false);
+  Column colInstance(gridSize, colId);
+  colInstance.set(isLit);
 }
 
 void setRow(int rowId, bool isLit) {
-  for ( int Pin = 0; Pin < gridSize; Pin++) {
-    setPoint(Pin, rowId, isLit);
-  }
-}
-
-void lightPoint(int colId, int rowId) {
-  setPoint(colId, rowId, true);
-}
-
-void unlightPoint(int colId, int rowId, bool isLit) {
-  setPoint(colId, rowId, false);
+  Row rowInstance(gridSize, rowId);
+  rowInstance.set(isLit);
 }
 
 void setPoint(int colId, int rowId, bool isLit) {
   Led ledInstance(colId, rowId);
-
   ledInstance.set(isLit);
 }
