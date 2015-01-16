@@ -108,20 +108,35 @@ class Column {
     }
 };
 
+class Diagonal {
+  private:
+    int size;
+    int _y_coord;
+
+  public:
+    Diagonal (int size) {}
+
+    void light () {
+      set(true);
+    }
+
+    void unlight () {
+      set(false);
+    }
+
+    void set (int isLit) {
+      for ( int pin = 0; pin < gridSize; pin++){
+        setPoint(pin, pin, isLit);
+      }
+    }
+};
 void loop() {
-  setColumn(1, true);
+  setDiagonal(true);
 }
 
-void lightAllDiagonal() {
-  for ( int Pin = 0; Pin < gridSize; Pin++){
-    setPoint(Pin, Pin, true);
-  }
-}
-
-void unlightAllDiagonal() {
-  for ( int Pin = 0; Pin < gridSize; Pin++){
-    setPoint(Pin, Pin, false);
-  }
+void setDiagonal(bool isLit) {
+  Diagonal diagInstance(gridSize);
+  diagInstance.set(isLit);
 }
 
 void setColumn(int colId, bool isLit) {
