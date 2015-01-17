@@ -1,10 +1,9 @@
 int incomingByte = 0;
-
 const int gridSize = 2;
 
-const int pinOffset = 2;
-const int rowStartingPoint = gridSize + pinOffset;
-const int colStartingPoint = (gridSize * 2) + pinOffset;
+//const int pinOffset = 2;
+//const int rowStartingPoint = gridSize + pinOffset;
+//const int colStartingPoint = (gridSize * 2) + pinOffset;
 
 //const int row[gridSize] = { gridSize, gridSize + 1 }; // the anodes
 //const int col[gridSize] = { offset, offset + 1 }; // the cathodes
@@ -12,51 +11,46 @@ const int colStartingPoint = (gridSize * 2) + pinOffset;
 const int row[gridSize] = { 2, 3 }; // the anodes
 const int col[gridSize] = { 4, 5 }; // the cathodes
 
-void setup() {
-  for (int thisPin = 0; thisPin < gridSize; thisPin++){
-      //we initialize the pins as output's
-      pinMode(col[thisPin], OUTPUT);
-      pinMode(row[thisPin], OUTPUT);
+class Matrix {
+  private:
+    int _gridSize;
+    int _pinOffset;
+    void setPinsToOutput();
+  public:
+    Matrix (int pinOffset, int gridSize);
+    int getPinForXCoord(int xCoord);
+    int getPinForYCoord(int yCoord);
+    void setup();
+};
 
-      // now we have to make the columns high so that all the LED's will be off
-      digitalWrite(col[thisPin], HIGH);
-  }
+Matrix::Matrix (int pinOffset, int gridSize) {
+  _gridSize = gridSize;
+  _pinOffset = pinOffset;
 }
 
-class Led {
-  private:
-    int _x_coord;
-    int _y_coord;
+void Matrix::setup () {
+   setPinsToOutput();
+}
 
-  public:
-    Led (int x_coord, int y_coord) {
-      _x_coord = x_coord;
-      _y_coord = y_coord;
-    }
+int Matrix::getPinForXCoord (int xCoord) {
+  return _pinOffset + xCoord;
+}
 
-    void light () {
-      set(true);
-    }
+int Matrix::getPinForYCoord (int yCoord) {
+  return _pinOffset + _gridSize + yCoord;
+}
 
-    void unlight () {
-      set(false);
-    }
+void Matrix::setPinsToOutput () {
+  for (int thisPin = 0; thisPin < _gridSize; thisPin++){
+    pinMode(getPinForXCoord(thisPin), OUTPUT);
+    pinMode(getPinForYCoord(thisPin), OUTPUT);
 
-    void set (int isLit) {
-      digitalWrite( row[_x_coord], (isLit) ? (HIGH) : (LOW)); // the anode is high
-      digitalWrite( col[_y_coord], (isLit) ? (LOW) : (HIGH));   // the cathode is low
-
-      // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
-      delayMicroseconds(1);
-
-      //now we have tu turn it off so we will inverse the polarity
-      digitalWrite( row[_x_coord], (isLit) ? (LOW) : (HIGH));  // the anode is low
-      digitalWrite( col[_y_coord], (isLit) ? (HIGH) : (LOW));  // the cathode is high
-
-      //we have turn the led off, next delay it 1 microsecond and  go to the next row
-      delayMicroseconds(1);
-    }
+    // now we have to make the columns high so that all the LED's will be off
+    digitalWrite(getPinForYCoord(thisPin), HIGH);
+  }
 };
+
+Matrix matrix(2, 2);
 
 class Row {
   private:
@@ -130,6 +124,55 @@ class Diagonal {
       }
     }
 };
+
+class Led {
+  private:
+    int _x_coord;
+    int _y_coord;
+
+  public:
+    Led (int x_coord, int y_coord) {
+      _x_coord = x_coord;
+      _y_coord = y_coord;
+    }
+
+    void light () {
+      set(true);
+    }
+
+    void unlight () {
+      set(false);
+    }
+
+    void set (int isLit) {
+      digitalWrite( matrix.getPinForXCoord(_x_coord), (isLit) ? (HIGH) : (LOW)); // the anode is high
+      digitalWrite( matrix.getPinForYCoord(_y_coord), (isLit) ? (LOW) : (HIGH));   // the cathode is low
+
+      // this turn the led on now we have to let the led on for some time .... 1 microsecond is enough
+      delayMicroseconds(1);
+
+      //now we have tu turn it off so we will inverse the polarity
+      digitalWrite( matrix.getPinForXCoord(_x_coord), (isLit) ? (LOW) : (HIGH));  // the anode is low
+      digitalWrite( matrix.getPinForYCoord(_y_coord), (isLit) ? (HIGH) : (LOW));  // the cathode is high
+
+      //we have turn the led off, next delay it 1 microsecond and  go to the next row
+      delayMicroseconds(1);
+    }
+};
+
+
+
+
+
+
+
+// =========================================================>
+
+
+void setup() {
+  matrix.setup();
+}
+
 void loop() {
   setDiagonal(true);
 }
