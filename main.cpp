@@ -1,16 +1,3 @@
-int incomingByte = 0;
-const int gridSize = 2;
-
-//const int pinOffset = 2;
-//const int rowStartingPoint = gridSize + pinOffset;
-//const int colStartingPoint = (gridSize * 2) + pinOffset;
-
-//const int row[gridSize] = { gridSize, gridSize + 1 }; // the anodes
-//const int col[gridSize] = { offset, offset + 1 }; // the cathodes
-
-const int row[gridSize] = { 2, 3 }; // the anodes
-const int col[gridSize] = { 4, 5 }; // the cathodes
-
 class Matrix {
   private:
     int _gridSize;
